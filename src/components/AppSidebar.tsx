@@ -24,7 +24,10 @@ import {
   TrendingUp,
   Target,
   Clock,
-  AlertCircle
+  AlertCircle,
+  Brain,
+  Timer,
+  LineChart
 } from 'lucide-react';
 
 interface AppSidebarProps {
@@ -54,6 +57,13 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ activeView, onViewChange, stats
       badge: stats.total > 0 ? stats.total : null,
     },
     {
+      title: "Analytics",
+      icon: LineChart,
+      id: "analytics",
+      badge: "New",
+      badgeVariant: "secondary" as const,
+    },
+    {
       title: "Calendar View",
       icon: Calendar,
       id: "calendar",
@@ -75,12 +85,19 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ activeView, onViewChange, stats
     },
   ];
 
-  const trendingFeatures = [
+  const productivityFeatures = [
+    {
+      title: "Focus Mode",
+      icon: Brain,
+      id: "focus-mode",
+      badge: "Pomodoro",
+      badgeVariant: "outline" as const,
+    },
     {
       title: "AI Priority",
       icon: TrendingUp,
       id: "ai-priority",
-      badge: "New",
+      badge: "AI",
       badgeVariant: "secondary" as const,
     },
     {
@@ -89,13 +106,6 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ activeView, onViewChange, stats
       id: "smart-goals",
       badge: "Beta",
       badgeVariant: "outline" as const,
-    },
-    {
-      title: "Focus Mode",
-      icon: Filter,
-      id: "focus-mode",
-      badge: "Pro",
-      badgeVariant: "default" as const,
     },
   ];
 
@@ -158,10 +168,10 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ activeView, onViewChange, stats
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Trending Features</SidebarGroupLabel>
+          <SidebarGroupLabel>Productivity Features</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {trendingFeatures.map((item) => (
+              {productivityFeatures.map((item) => (
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton 
                     onClick={() => onViewChange(item.id)}

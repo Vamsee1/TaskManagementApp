@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +7,9 @@ import AppSidebar from '@/components/AppSidebar';
 import TaskCard from '@/components/TaskCard';
 import TaskForm from '@/components/TaskForm';
 import StatsCard from '@/components/StatsCard';
+import AnalyticsDashboard from '@/components/AnalyticsDashboard';
+import FocusMode from '@/components/FocusMode';
+import CalendarView from '@/components/CalendarView';
 import Footer from '@/components/Footer';
 import { useTasks } from '@/hooks/useTasks';
 import { useNotifications } from '@/hooks/useNotifications';
@@ -21,31 +23,62 @@ import {
   Bell,
   Settings,
   BarChart3,
-  Sparkles
+  Sparkles,
+  Brain,
+  Timer,
+  Focus
 } from 'lucide-react';
 import { format, isToday, isTomorrow, addDays } from 'date-fns';
 
 const Index = () => {
   const [activeView, setActiveView] = useState('dashboard');
   const { tasks, addTask, updateTask, deleteTask, getTaskStats, getTasksByPriority, getOverdueTasks } = useTasks();
-  const { showNotification } = useNotifications();
+  const { 
+    showNotification, 
+    checkOverdueTasks, 
+    checkUpcomingTasks, 
+    sendDailyDigest, 
+    scheduleRecurringReminders,
+    notifyProductivityMilestone 
+  } = useNotifications();
   const stats = getTaskStats();
 
-  // Check for overdue tasks periodically
+  // Enhanced notification system
   useEffect(() => {
-    const interval = setInterval(() => {
-      const overdueTasks = getOverdueTasks();
-      if (overdueTasks.length > 0) {
-        showNotification(
-          'Task Reminder',
-          `You have ${overdueTasks.length} overdue task(s). Time to take action!`,
-          { tag: 'periodic-reminder' }
-        );
-      }
-    }, 600000); // Check every 10 minutes
+    // Check for overdue tasks every 10 minutes
+    const overdueInterval = setInterval(() => {
+      checkOverdueTasks(tasks);
+    }, 600000);
 
-    return () => clearInterval(interval);
-  }, [tasks]);
+    // Check for upcoming tasks every hour
+    const upcomingInterval = setInterval(() => {
+      checkUpcomingTasks(tasks);
+    }, 3600000);
+
+    // Send daily digest at 9 AM
+    const now = new Date();
+    const nineAM = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 0, 0);
+    if (now < nineAM) {
+      const timeUntilNineAM = nineAM.getTime() - now.getTime();
+      setTimeout(() => {
+        sendDailyDigest(tasks);
+        // Set up daily recurring reminder
+        setInterval(() => sendDailyDigest(tasks), 24 * 60 * 60 * 1000);
+      }, timeUntilNineAM);
+    }
+
+    // Schedule recurring reminders for upcoming tasks
+    scheduleRecurringReminders(tasks);
+
+    // Check for productivity milestones
+    const completedCount = stats.completed;
+    notifyProductivityMilestone(completedCount);
+
+    return () => {
+      clearInterval(overdueInterval);
+      clearInterval(upcomingInterval);
+    };
+  }, [tasks, stats.completed]);
 
   const renderDashboard = () => {
     const priorityTasks = getTasksByPriority().slice(0, 6);
@@ -161,41 +194,53 @@ const Index = () => {
           </Card>
         </div>
 
-        {/* Trending Features Showcase */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Enhanced Feature Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card className="task-card hover:shadow-lg transition-all duration-300 cursor-pointer" 
-                onClick={() => setActiveView('ai-priority')}>
+                onClick={() => setActiveView('analytics')}>
             <CardContent className="p-6 text-center">
               <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <TrendingUp className="w-6 h-6 text-white" />
+                <BarChart3 className="w-6 h-6 text-white" />
               </div>
-              <h3 className="font-semibold mb-2">AI Priority Assistant</h3>
-              <p className="text-sm text-muted-foreground">Let AI help prioritize your tasks based on deadlines and importance</p>
-              <Badge className="mt-2">New Feature</Badge>
+              <h3 className="font-semibold mb-2">Analytics</h3>
+              <p className="text-sm text-muted-foreground">Real-time dashboard with daily, weekly, monthly insights</p>
+              <Badge className="mt-2">Enhanced</Badge>
             </CardContent>
           </Card>
 
-          <Card className="task-card hover:shadow-lg transition-all duration-300 cursor-pointer"
-                onClick={() => setActiveView('smart-goals')}>
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Target className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="font-semibold mb-2">Smart Goals</h3>
-              <p className="text-sm text-muted-foreground">Break down complex goals into manageable tasks automatically</p>
-              <Badge variant="secondary" className="mt-2">Beta</Badge>
-            </CardContent>
-          </Card>
-
-          <Card className="task-card hover:shadow-lg transition-all duration-300 cursor-pointer"
+          <Card className="task-card hover:shadow-lg transition-all duration-300 cursor-pointer" 
                 onClick={() => setActiveView('focus-mode')}>
             <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Zap className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Brain className="w-6 h-6 text-white" />
               </div>
               <h3 className="font-semibold mb-2">Focus Mode</h3>
-              <p className="text-sm text-muted-foreground">Distraction-free environment for maximum productivity</p>
-              <Badge variant="outline" className="mt-2">Pro</Badge>
+              <p className="text-sm text-muted-foreground">Pomodoro timer with distraction-free environment</p>
+              <Badge variant="secondary" className="mt-2">New</Badge>
+            </CardContent>
+          </Card>
+
+          <Card className="task-card hover:shadow-lg transition-all duration-300 cursor-pointer"
+                onClick={() => setActiveView('calendar')}>
+            <CardContent className="p-6 text-center">
+              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Calendar className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="font-semibold mb-2">Calendar View</h3>
+              <p className="text-sm text-muted-foreground">Visualize tasks in daily/weekly/monthly calendar</p>
+              <Badge variant="outline" className="mt-2">Updated</Badge>
+            </CardContent>
+          </Card>
+
+          <Card className="task-card hover:shadow-lg transition-all duration-300 cursor-pointer"
+                onClick={() => setActiveView('notifications')}>
+            <CardContent className="p-6 text-center">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Bell className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="font-semibold mb-2">Smart Alerts</h3>
+              <p className="text-sm text-muted-foreground">Advanced notifications and reminders system</p>
+              <Badge className="mt-2">Pro</Badge>
             </CardContent>
           </Card>
         </div>
@@ -247,6 +292,12 @@ const Index = () => {
     switch (activeView) {
       case 'dashboard':
         return renderDashboard();
+      case 'analytics':
+        return <AnalyticsDashboard tasks={tasks} />;
+      case 'calendar':
+        return <CalendarView tasks={tasks} onTaskClick={(task) => console.log('Task clicked:', task)} />;
+      case 'focus-mode':
+        return <FocusMode />;
       case 'add-task':
         return (
           <div className="space-y-6">
@@ -296,24 +347,6 @@ const Index = () => {
             </CardContent>
           </Card>
         );
-      case 'focus-mode':
-        return (
-          <Card className="task-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Zap className="w-5 h-5" />
-                Focus Mode
-                <Badge variant="outline">Pro</Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
-                Enter a distraction-free environment that helps you concentrate on your most 
-                important tasks with built-in pomodoro timer and progress tracking.
-              </p>
-            </CardContent>
-          </Card>
-        );
       case 'notifications':
         return (
           <Card className="task-card">
@@ -324,10 +357,30 @@ const Index = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">
-                Configure how and when you want to receive notifications about your tasks, 
-                deadlines, and productivity insights.
-              </p>
+              <div className="space-y-4">
+                <p className="text-muted-foreground">
+                  Configure how and when you want to receive notifications about your tasks, 
+                  deadlines, and productivity insights.
+                </p>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <span className="font-medium">Overdue Task Alerts</span>
+                    <Badge className="bg-green-500">Active</Badge>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <span className="font-medium">Daily Digest (9 AM)</span>
+                    <Badge className="bg-green-500">Active</Badge>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <span className="font-medium">Upcoming Task Reminders</span>
+                    <Badge className="bg-green-500">Active</Badge>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <span className="font-medium">Productivity Milestones</span>
+                    <Badge className="bg-green-500">Active</Badge>
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         );

@@ -43,6 +43,11 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 262 83% 58%;
+
+    /* Custom gradient colors */
+    --gradient-from: 262 83% 58%;
+    --gradient-via: 255 84% 60%;
+    --gradient-to: 340 82% 62%;
   }
 
   .dark {
@@ -115,6 +120,14 @@
   .gradient-text {
     @apply bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to bg-clip-text text-transparent;
   }
+
+  .focus-mode-work {
+    @apply bg-gradient-to-br from-red-50 to-orange-50;
+  }
+
+  .focus-mode-break {
+    @apply bg-gradient-to-br from-green-50 to-blue-50;
+  }
 }
 
 @layer utilities {
@@ -125,5 +138,17 @@
 
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  .gradient-from {
+    color: hsl(var(--gradient-from));
+  }
+
+  .gradient-via {
+    color: hsl(var(--gradient-via));
+  }
+
+  .gradient-to {
+    color: hsl(var(--gradient-to));
   }
 }
