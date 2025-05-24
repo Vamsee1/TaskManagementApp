@@ -1,73 +1,99 @@
-# Welcome to your Lovable project
+# Task Management App
 
-## Project info
+A modern, feature-rich task management application built with React, TypeScript, and Vite.
 
-**URL**: https://lovable.dev/projects/5a844685-5e32-4d44-ac99-b593100b9e72
+## Features
 
-## How can I edit this code?
+- 📝 Create, read, update, and delete tasks
+- 🎯 Priority-based task organization
+- ⏰ Deadline tracking and reminders
+- 📊 Task statistics and analytics
+- 🎮 Focus mode with Pomodoro timer
+- 📅 Calendar view for task visualization
+- 🔔 Smart notifications system
+- 💾 Local storage persistence
+- 📱 Responsive design for all devices
 
-There are several ways of editing your application.
+## Technologies Used
 
-**Use Lovable**
+- React 18
+- TypeScript
+- Vite
+- Tailwind CSS
+- shadcn/ui components
+- React Router
+- React Query
+- date-fns
+- Local Storage API
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/5a844685-5e32-4d44-ac99-b593100b9e72) and start prompting.
+## Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+- Node.js (v14 or higher)
+- npm or yarn
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Installation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. Clone the repository:
+```bash
+git clone https://github.com/Vamsee1/TaskManagementApp.git
+cd TaskManagementApp
+```
 
-Follow these steps:
+2. Install dependencies:
+```bash
+npm install
+```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+3. Start the development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+4. Open your browser and visit:
+```
+http://localhost:8080
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Usage
 
-**Use GitHub Codespaces**
+1. **Adding Tasks**
+   - Click the "Quick Add Task" button
+   - Fill in task details (name, priority, deadline, etc.)
+   - Click "Add Task"
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+2. **Managing Tasks**
+   - View tasks in the dashboard
+   - Use priority filters to sort tasks
+   - Mark tasks as complete/in-progress
+   - Edit or delete tasks as needed
 
-## What technologies are used for this project?
+3. **Using Focus Mode**
+   - Click the "Focus Mode" card
+   - Set your work duration
+   - Start the timer
+   - Stay focused on your current task
 
-This project is built with:
+4. **Calendar View**
+   - Access the calendar view
+   - See tasks organized by date
+   - Drag and drop tasks to reschedule
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Contributing
 
-## How can I deploy this project?
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-Simply open [Lovable](https://lovable.dev/projects/5a844685-5e32-4d44-ac99-b593100b9e72) and click on Share -> Publish.
+## License
 
-## Can I connect a custom domain to my Lovable project?
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-Yes, you can!
+## Author
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Vamsee1
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## Acknowledgments
+
+- shadcn/ui for the beautiful component library
+- Vite team for the amazing build tool
+- React team for the incredible framework
