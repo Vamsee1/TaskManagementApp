@@ -7,8 +7,9 @@ import { componentTagger } from "lovable-tagger";
 export default defineConfig(({ mode }) => ({
   base: '/TaskManagementApp/',
   server: {
-    host: "::",
+    host: true,
     port: 8080,
+    strictPort: true,
   },
   plugins: [
     react(),
@@ -24,5 +25,10 @@ export default defineConfig(({ mode }) => ({
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
   },
 }));
